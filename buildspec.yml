@@ -1,0 +1,30 @@
+version: 0.2
+env:
+  variables:
+    BRANCH: "master"
+
+phases:
+    install:
+        runtime-versions:
+            python: 3.8
+    pre_build:
+        commands:
+            - curr_working_dir=`pwd`
+            - export PIP_CONFIG_FILE=$curr_working_dir/pip.conf
+            - BRANCH=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/refs\/heads\///')
+            - |
+              if [ "$BRANCH" = "master"] ; then
+                pip install s3pypi
+              fi
+    build:
+        commands:
+            - |
+              if [ "$BRANCH" = "master"] ; then
+                python setup.py sdist bdist_wheel
+              fi
+    post_build:
+        commands:
+            - |
+              if [ "$BRANCH" = "master"] ; then
+                s3pypi --bucket pypi.fourzero.one
+              fi
