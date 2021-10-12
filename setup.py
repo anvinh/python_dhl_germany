@@ -27,6 +27,7 @@ setup(
     license='MIT',
     url='',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    include_package_data=True,
     install_requires=requirements,
     python_requires='>=3.9'
 )

@@ -24,8 +24,7 @@ class DHL:
         self.client = self._get_client()
         self.version = self._get_version()
 
-    def _get_wsdl_filename(self):
-        print(__file__)
+    def _get_wsdl_file(self):
         if self.is_test:
             return os.path.join(os.path.dirname(__file__), 'wsdl/3.1/test.wsdl')
         return os.path.join(os.path.dirname(__file__), 'wsdl/3.1/production.wsdl')
@@ -49,7 +48,7 @@ class DHL:
         session = Session()
         session.auth = HTTPBasicAuth(self.auth_user, self.auth_password)
         client = zeep.Client(
-            wsdl=self._get_wsdl_filename(),
+            wsdl=self._get_wsdl_file(),
             transport=zeep.transports.Transport(session=session, timeout=30)
         )
         client.set_default_soapheaders([self._get_auth_header()])
