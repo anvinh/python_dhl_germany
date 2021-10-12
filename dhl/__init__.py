@@ -27,8 +27,8 @@ class DHL:
     def _get_wsdl_filename(self):
         print(__file__)
         if self.is_test:
-            return os.path.join(os.path.dirname(__file__), './wsdl/3.1/test.wsdl')
-        return os.path.join(os.path.dirname(__file__), './wsdl/3.1/production.wsdl')
+            return os.path.join(os.path.dirname(__file__), 'wsdl/3.1/test.wsdl')
+        return os.path.join(os.path.dirname(__file__), 'wsdl/3.1/production.wsdl')
 
     def _get_auth_header(self):
         auth_type = zeep.xsd.Element(
