@@ -111,3 +111,5 @@ venv.bak/
 
 #settings - json
 settings.json
+
+/test.py

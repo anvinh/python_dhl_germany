@@ -6,6 +6,11 @@ from requests import Session
 from requests.auth import HTTPBasicAuth  # or HTTPDigestAuth, or OAuth1, etc.
 
 
+EU_COUNTRY_CODES = [
+    'DE','BE','BG','CZ','DK','DE','EE','IE','EL','ES','FR','GR','HR','IT','CY',
+    'LV','LT','LU','HU','MT','NL','AT','PL','PT','RO','SI','SK','FI','SE'
+]
+
 class DHL:
     __version__ = '0.1.0'
     __dhl_version__ = '3.1.8'
@@ -45,7 +50,7 @@ class DHL:
         session.auth = HTTPBasicAuth(self.auth_user, self.auth_password)
         client = zeep.Client(
             wsdl=self._get_wsdl_filename(),
-            transport=zeep.transports.Transport(session=session, timeout=20)
+            transport=zeep.transports.Transport(session=session, timeout=30)
         )
         client.set_default_soapheaders([self._get_auth_header()])
         return client
@@ -77,7 +82,7 @@ class DHL:
         )
 
     def _get_receiver(self, receiver, fallback_phone=""):
-        phone = receiver['phone']
+        phone = receiver.get('phone')
         if phone == '':
             phone = fallback_phone
 
@@ -85,7 +90,7 @@ class DHL:
             name1 = receiver['name'],
             Communication = self.client.get_type('ns0:CommunicationType')(
                 phone = phone,
-                email = receiver['email'],
+                email = receiver.get('email'),
             )
         )
 
@@ -109,14 +114,14 @@ class DHL:
 
         return dhl_receiver
 
-    def _get_shipment_details(self, dhl_product, dhl_account_number, order_id):
+    def _get_shipment_details(self, dhl_product, dhl_account_number, order_id, weight_total):
         return self.client.get_type('ns1:ShipmentDetailsTypeType')(
             product = dhl_product,
             accountNumber = dhl_account_number,
             shipmentDate = datetime.utcnow().strftime('%Y-%m-%d'),
             customerReference = order_id,
             ShipmentItem = self.client.get_type('ns1:ShipmentItemTypeType')(
-                weightInKG = 0.3
+                weightInKG = weight_total
             )
         )
 
@@ -131,6 +136,7 @@ class DHL:
             order_id: str,
             shipper: dict,
             receiver: dict,
+            weight_total: float,
             dhl_product: str,
             dhl_account_number: str,
             label_type='URL',
@@ -142,7 +148,7 @@ class DHL:
             sequenceNumber = order_id,
             Shipment = {
                 "ShipmentDetails": self._get_shipment_details(
-                    dhl_product, dhl_account_number, order_id),
+                    dhl_product, dhl_account_number, order_id, weight_total),
                 "Shipper": self._get_shipper(shipper),
                 "Receiver": self._get_receiver(receiver, shipper['phone']),
             },
