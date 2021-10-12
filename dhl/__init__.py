@@ -57,7 +57,7 @@ class DHL:
     def _get_shipper(self, shipper):
         shipper_name = self.client.get_type('ns0:NameType')(
             name1 = shipper['name'],
-            name2 = shipper['name2']
+            name2 = shipper.get('name2')
         )
         address = self.client.get_type('ns0:NativeAddressTypeNew')(
             streetName = shipper['street'],
@@ -94,7 +94,7 @@ class DHL:
         )
 
         dhl_receiver.Address = self.client.get_type('ns0:ReceiverNativeAddressType')(
-            name2 = receiver['name2'],
+            name2 = receiver.get('name2'),
             streetName = receiver['street'],
             streetNumber = receiver['street_number'],
             zip = receiver['zip'],
