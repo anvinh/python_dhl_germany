@@ -17,7 +17,7 @@ if path.isfile('requirements.txt'):
 
 setup(
     name='python_dhl_germany',
-    version='0.1.0',
+    version='0.1.1',
     description='',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -28,5 +28,5 @@ setup(
     url='',
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     install_requires=requirements,
-    python_requires='>=3.8'
+    python_requires='>=3.9'
 )
