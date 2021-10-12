@@ -17,7 +17,7 @@ if path.isfile('requirements.txt'):
 
 setup(
     name='python_dhl_germany',
-    version='0.1.1',
+    version='0.1.2',
     description='',
     long_description=long_description,
     long_description_content_type='text/markdown',

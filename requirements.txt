@@ -1,2 +1,2 @@
-requests
-zeep
+requests==2.26.0
+zeep==4.1.0
