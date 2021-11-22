@@ -11,7 +11,12 @@ phases:
         commands:
             - curr_working_dir=`pwd`
             - export PIP_CONFIG_FILE=$curr_working_dir/pip.conf
-            - BRANCH=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/refs\/heads\///')
+            - BRANCH=$(echo $CODEBUILD_WEBHOOK_BASE_REF | sed 's/refs\/heads\///')
+            - |
+              if [ "${BRANCH}" = "" ] ; then
+                BRANCH=$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/refs\/heads\///')
+              fi
+            - echo branch $BRANCH
             - |
               if [ "${BRANCH}" = "master" ] ; then
                 pip install s3pypi
