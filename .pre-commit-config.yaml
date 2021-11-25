@@ -1,4 +1,4 @@
-files: printbox/
+files: dhl/
 repos:
     - repo: meta
       hooks:
@@ -14,7 +14,7 @@ repos:
       hooks:
           - id: black
             language_version: python3.9
-            args: [--line-length=79, --check, ./printbox, ./tests]
+            args: [--line-length=79, --check, ./dhl, ./tests]
 
     - repo: https://gitlab.com/pycqa/flake8
       rev: 3.9.2
@@ -25,7 +25,7 @@ repos:
       rev: 1.7.1
       hooks:
         - id: bandit
-          args: [ -v, -r, ./printbox, ./tests ]
+          args: [ -v, -r, ./dhl, ./tests ]
 
     - repo: local
       hooks:
