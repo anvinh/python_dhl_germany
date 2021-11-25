@@ -1,2 +1,7 @@
 -r requirements.txt
 pylint
+pre-commit
+pytest
+pytest-cov
+autopep8
+pyhamcrest
