@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+import textwrap
 
 import zeep
 from requests import Session
@@ -160,11 +161,30 @@ class DHL:
         return self.client.get_type("ns1:ShipmentDetailsTypeType")(
             product=dhl_product,
             accountNumber=dhl_account_number,
-            shipmentDate=datetime.utcnow().strftime("%Y-%m-%d"),
+            shipmentDate=datetime.now().strftime("%Y-%m-%d"),
             customerReference=order_id,
             ShipmentItem=self.client.get_type("ns1:ShipmentItemTypeType")(
                 weightInKG=weight_total
             ),
+        )
+
+    def _get_export_document(self, order):
+        export_positions = []
+        for position in order["positions"]:
+            export_positions.append({
+                "description": textwrap.shorten(position["name"], width=256, placeholder="..."),
+                "countryCodeOrigin": position["country_code_origin"],
+                "customsTariffNumber": position["customs_tariff_number"],
+                "amount": position["quantity"],
+                "customsValue": position["price"],
+                "netWeightInKG": position["weight_per_unit"]
+            })
+        return self.client.get_type("ns1:ExportDocumentType")(
+            invoiceNumber=order["invoice_no"],
+            exportType="OTHER",
+            exportTypeDescription=order["description"],
+            placeOfCommital=order["place_of_commital"],
+            ExportDocPosition=export_positions
         )
 
     def get_version(self):
@@ -186,17 +206,26 @@ class DHL:
         label_type="URL",
         label_format="910-300-600",
         force_print=False,
+        order_to_ship=None
     ):
         shipment_order_type = self.client.get_type("ns1:ShipmentOrderType")
+
+        shipment = {
+            "ShipmentDetails": self._get_shipment_details(
+                dhl_product, dhl_account_number, order_id, weight_total
+            ),
+            "Shipper": self._get_shipper(shipper),
+            "Receiver": self._get_receiver(receiver, shipper["phone"]),
+        }
+
+        # create export documents if receiver country is not in the EU
+        if receiver["country_code"] not in EU_COUNTRY_CODES:
+            shipment["ExportDocument"] = self._get_export_document(
+                order_to_ship)
+
         shipment_order = shipment_order_type(
             sequenceNumber=order_id,
-            Shipment={
-                "ShipmentDetails": self._get_shipment_details(
-                    dhl_product, dhl_account_number, order_id, weight_total
-                ),
-                "Shipper": self._get_shipper(shipper),
-                "Receiver": self._get_receiver(receiver, shipper["phone"]),
-            },
+            Shipment=shipment,
             PrintOnlyIfCodeable=force_print,
         )
 
