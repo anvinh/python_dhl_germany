@@ -124,7 +124,7 @@ class TestDHL:
                     "customs_tariff_number": "49119900",
                     "quantity": 2,
                     "price": 12.5,
-                    "weight_per_unit": 0.3
+                    "weight_per_unit": 0.3,
                 },
                 {
                     "name": "Test Product 2",
@@ -132,9 +132,9 @@ class TestDHL:
                     "customs_tariff_number": "49119900",
                     "quantity": 3,
                     "price": 1.5,
-                    "weight_per_unit": 0.5
-                }
-            ]
+                    "weight_per_unit": 0.5,
+                },
+            ],
         }
 
         response = dhl_client.create_shipment_order(
@@ -144,7 +144,7 @@ class TestDHL:
             3.0,
             "V53WPAK",
             "22222222225301",
-            order_to_ship=order
+            order_to_ship=order,
         )
         # assert_that(response, equal_to("test"))
         assert_that(
@@ -206,10 +206,14 @@ class TestDHL:
             equal_to(None),
         )
         assert_that(
-            response["CreationState"][0]["LabelData"]["Status"]["statusMessage"],
-            equal_to([
-                'Bitte geben Sie eine Hausnummer an.',
-                'Die eingegebene Adresse ist nicht leitcodierbar.',
-                'Bitte geben Sie eine Hausnummer an.'
-            ]),
+            response["CreationState"][0]["LabelData"]["Status"][
+                "statusMessage"
+            ],
+            equal_to(
+                [
+                    "Bitte geben Sie eine Hausnummer an.",
+                    "Die eingegebene Adresse ist nicht leitcodierbar.",
+                    "Bitte geben Sie eine Hausnummer an.",
+                ]
+            ),
         )

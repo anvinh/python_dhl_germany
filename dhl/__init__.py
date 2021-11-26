@@ -171,20 +171,24 @@ class DHL:
     def _get_export_document(self, order):
         export_positions = []
         for position in order["positions"]:
-            export_positions.append({
-                "description": textwrap.shorten(position["name"], width=256, placeholder="..."),
-                "countryCodeOrigin": position["country_code_origin"],
-                "customsTariffNumber": position["customs_tariff_number"],
-                "amount": position["quantity"],
-                "customsValue": position["price"],
-                "netWeightInKG": position["weight_per_unit"]
-            })
+            export_positions.append(
+                {
+                    "description": textwrap.shorten(
+                        position["name"], width=256, placeholder="..."
+                    ),
+                    "countryCodeOrigin": position["country_code_origin"],
+                    "customsTariffNumber": position["customs_tariff_number"],
+                    "amount": position["quantity"],
+                    "customsValue": position["price"],
+                    "netWeightInKG": position["weight_per_unit"],
+                }
+            )
         return self.client.get_type("ns1:ExportDocumentType")(
             invoiceNumber=order["invoice_no"],
             exportType="OTHER",
             exportTypeDescription=order["description"],
             placeOfCommital=order["place_of_commital"],
-            ExportDocPosition=export_positions
+            ExportDocPosition=export_positions,
         )
 
     def get_version(self):
@@ -206,7 +210,7 @@ class DHL:
         label_type="URL",
         label_format="910-300-600",
         force_print=False,
-        order_to_ship=None
+        order_to_ship=None,
     ):
         shipment_order_type = self.client.get_type("ns1:ShipmentOrderType")
 
@@ -221,7 +225,8 @@ class DHL:
         # create export documents if receiver country is not in the EU
         if receiver["country_code"] not in EU_COUNTRY_CODES:
             shipment["ExportDocument"] = self._get_export_document(
-                order_to_ship)
+                order_to_ship
+            )
 
         shipment_order = shipment_order_type(
             sequenceNumber=order_id,
