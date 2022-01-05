@@ -3,6 +3,8 @@ from datetime import datetime
 import textwrap
 
 import zeep
+import base64
+import requests
 from requests import Session
 from requests.auth import HTTPBasicAuth  # or HTTPDigestAuth, or OAuth1, etc.
 
@@ -198,6 +200,10 @@ class DHL:
         return self.client.service.getLabel(
             Version=self.version, shipmentNumber=shipment_number
         )
+
+    def get_label_from_url(self, url):
+        response = requests.get(url)
+        return base64.b64encode(response.content)
 
     def create_shipment_order(
         self,
