@@ -182,7 +182,7 @@ class DHL:
                     "customsTariffNumber": position["customs_tariff_number"],
                     "amount": position["amount"],
                     "customsValue": position["price"],
-                    "netWeightInKG": position["weight_unit"],
+                    "netWeightInKG": position["weight_unit"] / 1000.0,
                 }
             )
         return self.client.get_type("ns1:ExportDocumentType")(
