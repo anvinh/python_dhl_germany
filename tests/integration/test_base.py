@@ -124,7 +124,7 @@ class TestDHL:
                     "customs_tariff_number": "49119900",
                     "amount": 2,
                     "price": 12.5,
-                    "weight_unit": 300,
+                    "weight_unit": 150,
                 },
                 {
                     "name": "Test Product 2",
@@ -132,7 +132,7 @@ class TestDHL:
                     "customs_tariff_number": "49119900",
                     "amount": 3,
                     "price": 1.5,
-                    "weight_unit": 500,
+                    "weight_unit": 100,
                 },
             ],
         }
@@ -141,7 +141,7 @@ class TestDHL:
             "123456-4",
             shipper,
             receiver,
-            3.0,
+            6.0,
             "V53WPAK",
             "22222222225301",
             order_to_ship=order,
