@@ -124,7 +124,7 @@ class TestDHL:
                     "customs_tariff_number": "49119900",
                     "amount": 2,
                     "price": 12.5,
-                    "weight_unit": 0.3,
+                    "weight_unit": 300,
                 },
                 {
                     "name": "Test Product 2",
@@ -132,7 +132,7 @@ class TestDHL:
                     "customs_tariff_number": "49119900",
                     "amount": 3,
                     "price": 1.5,
-                    "weight_unit": 0.5,
+                    "weight_unit": 500,
                 },
             ],
         }
