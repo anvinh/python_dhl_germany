@@ -180,9 +180,9 @@ class DHL:
                     ),
                     "countryCodeOrigin": position["country_code_origin"],
                     "customsTariffNumber": position["customs_tariff_number"],
-                    "amount": position["quantity"],
+                    "amount": position["amount"],
                     "customsValue": position["price"],
-                    "netWeightInKG": position["weight_per_unit"],
+                    "netWeightInKG": position["weight_unit"],
                 }
             )
         return self.client.get_type("ns1:ExportDocumentType")(
