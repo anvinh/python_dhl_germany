@@ -162,6 +162,72 @@ class TestDHL:
             is_not(equal_to(None)),
         )
 
+    def test_create_label_CH_ORG(self, dhl_client, shipper, receiver):
+        receiver = {
+            "name": "User Tester",
+            "street": "Bildstrasse, ",
+            "street_number": "1",
+            "zip": "8580",
+            "city": "Amriswil",
+            "country_code": "CH",
+            "phone": "",
+            "email": "",
+            "care_of_name": None,
+            "packing_station": "",
+            "account_no": "",
+        }
+
+        order = {
+            "order_id": "126bad42dc1",
+            "source": "foreverontheblockchain_api",
+            "positions": [
+                {
+                    "product_id": "document",
+                    "name": "Druckerzeugnisse",
+                    "barcode": "dfc4754e",
+                    "amount": 2,
+                    "weight_unit": 100,
+                    "required_shipment": True,
+                    "scanned": 2,
+                    "price": 2.0,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                }
+            ],
+            "shipment": {
+                "deliveryprovider": "",
+                "tracking_no": "",
+                "shipped": "",
+                "shipped_by_scanstation_id": "",
+            },
+            "status": {"paid": True, "printed": True, "shipped": False},
+            "customs": {
+                "invoice_no": "126bad42dc1",
+                "description": "Druckerzeugnisse",
+                "place_of_commital": "Hamburg",
+            },
+        }
+
+        response = dhl_client.create_shipment_order(
+            "123456-5",
+            shipper,
+            receiver,
+            0.4,
+            "V53WPAK",
+            "22222222225301",
+            order_to_ship=order,
+        )
+        assert_that(
+            response["CreationState"][0]["LabelData"]["labelUrl"],
+            is_not(equal_to(None)),
+        )
+        assert_that(
+            response["CreationState"][0]["LabelData"]["exportLabelUrl"],
+            is_not(equal_to(None)),
+        )
+
     """
     NOT TESTABLE YET
     def test_create_label_force(self, dhl_client, shipper, receiver):

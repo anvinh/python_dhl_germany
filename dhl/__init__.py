@@ -196,11 +196,10 @@ class DHL:
                     ],
                     "amount": position["amount"],
                     "customsValue": position["price"],
-                    "netWeightInKG": position["weight_unit"]
-                    * position["amount"]
-                    / 1000.0,
+                    "netWeightInKG": position["weight_unit"] / 1000.0,
                 }
             )
+        print("exports:", export_positions)
         return self.client.get_type("ns1:ExportDocumentType")(
             invoiceNumber=order["customs"]["invoice_no"],
             exportType="OTHER",
