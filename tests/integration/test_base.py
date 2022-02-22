@@ -128,7 +128,7 @@ class TestDHL:
                     "customs": {
                         "country_code_origin": "DE",
                         "customs_tariff_number": "49119900",
-                    }
+                    },
                 },
                 {
                     "name": "Test Product 2",
@@ -138,7 +138,7 @@ class TestDHL:
                     "customs": {
                         "country_code_origin": "DE",
                         "customs_tariff_number": "49119900",
-                    }
+                    },
                 },
             ],
         }
