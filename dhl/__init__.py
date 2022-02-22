@@ -1,4 +1,5 @@
 import os
+import logging
 from datetime import datetime
 import textwrap
 
@@ -7,6 +8,9 @@ import base64
 import requests
 from requests import Session
 from requests.auth import HTTPBasicAuth  # or HTTPDigestAuth, or OAuth1, etc.
+
+
+logger = logging.getLogger(__file__)
 
 
 EU_COUNTRY_CODES = [
@@ -171,7 +175,11 @@ class DHL:
         )
 
     def _get_export_document(self, order):
+        logger.debug("create export document", order)
         if "customs" not in order:
+            logger.error(
+                "ERROR: could not find customs information on order", order
+            )
             raise Exception(
                 "ERROR: could not find customs information on order", order
             )
@@ -179,6 +187,10 @@ class DHL:
         export_positions = []
         for position in order["positions"]:
             if "customs" not in position:
+                logger.error(
+                    "ERROR: could not find customs information on position",
+                    position,
+                )
                 raise Exception(
                     "ERROR: could not find customs information on position",
                     position,
@@ -199,7 +211,7 @@ class DHL:
                     "netWeightInKG": position["weight_unit"] / 1000.0,
                 }
             )
-        print("exports:", export_positions)
+
         return self.client.get_type("ns1:ExportDocumentType")(
             invoiceNumber=order["customs"]["invoice_no"],
             exportType="OTHER",
@@ -233,31 +245,39 @@ class DHL:
         force_print=False,
         order_to_ship=None,
     ):
-        shipment_order_type = self.client.get_type("ns1:ShipmentOrderType")
+        try:
+            shipment_order_type = self.client.get_type("ns1:ShipmentOrderType")
 
-        shipment = {
-            "ShipmentDetails": self._get_shipment_details(
-                dhl_product, dhl_account_number, order_id, weight_total
-            ),
-            "Shipper": self._get_shipper(shipper),
-            "Receiver": self._get_receiver(receiver, shipper["phone"]),
-        }
+            shipment = {
+                "ShipmentDetails": self._get_shipment_details(
+                    dhl_product, dhl_account_number, order_id, weight_total
+                ),
+                "Shipper": self._get_shipper(shipper),
+                "Receiver": self._get_receiver(receiver, shipper["phone"]),
+            }
 
-        # create export documents if receiver country is not in the EU
-        if receiver["country_code"] not in EU_COUNTRY_CODES:
-            shipment["ExportDocument"] = self._get_export_document(
-                order_to_ship
+            # create export documents if receiver country is not in the EU
+            if receiver["country_code"] not in EU_COUNTRY_CODES:
+                logger.debug(
+                    "create export document for not EU",
+                    receiver["country_code"],
+                )
+                shipment["ExportDocument"] = self._get_export_document(
+                    order_to_ship
+                )
+
+            shipment_order = shipment_order_type(
+                sequenceNumber=order_id,
+                Shipment=shipment,
+                PrintOnlyIfCodeable=force_print,
             )
 
-        shipment_order = shipment_order_type(
-            sequenceNumber=order_id,
-            Shipment=shipment,
-            PrintOnlyIfCodeable=force_print,
-        )
-
-        return self.client.service.createShipmentOrder(
-            Version=self.version,
-            ShipmentOrder=shipment_order,
-            labelResponseType=label_type,
-            labelFormat=label_format,
-        )
+            return self.client.service.createShipmentOrder(
+                Version=self.version,
+                ShipmentOrder=shipment_order,
+                labelResponseType=label_type,
+                labelFormat=label_format,
+            )
+        except Exception as ex:
+            logger.error("could not create shipment", ex)
+            raise Exception("could not create shipment", ex)
