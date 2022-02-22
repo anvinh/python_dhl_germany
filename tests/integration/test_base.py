@@ -114,25 +114,31 @@ class TestDHL:
         }
 
         order = {
-            "invoice_no": "1234567",
-            "description": "Ziegelsteine",
-            "place_of_commital": shipper["city"],
+            "customs": {
+                "invoice_no": "1234567",
+                "description": "Ziegelsteine",
+                "place_of_commital": shipper["city"],
+            },
             "positions": [
                 {
                     "name": "Test Product 1",
-                    "country_code_origin": "DE",
-                    "customs_tariff_number": "49119900",
                     "amount": 2,
                     "price": 12.5,
                     "weight_unit": 150,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    }
                 },
                 {
                     "name": "Test Product 2",
-                    "country_code_origin": "DE",
-                    "customs_tariff_number": "49119900",
                     "amount": 3,
                     "price": 1.5,
                     "weight_unit": 100,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    }
                 },
             ],
         }
