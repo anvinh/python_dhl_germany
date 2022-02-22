@@ -173,20 +173,27 @@ class DHL:
     def _get_export_document(self, order):
         if "customs" not in order:
             raise Exception(
-                "ERROR: could not find customs information on order", order)
+                "ERROR: could not find customs information on order", order
+            )
 
         export_positions = []
         for position in order["positions"]:
             if "customs" not in position:
                 raise Exception(
-                    "ERROR: could not find customs information on position", position)
+                    "ERROR: could not find customs information on position",
+                    position,
+                )
             export_positions.append(
                 {
                     "description": textwrap.shorten(
                         position["name"], width=256, placeholder="..."
                     ),
-                    "countryCodeOrigin": position["customs"]["country_code_origin"],
-                    "customsTariffNumber": position["customs"]["customs_tariff_number"],
+                    "countryCodeOrigin": position["customs"][
+                        "country_code_origin"
+                    ],
+                    "customsTariffNumber": position["customs"][
+                        "customs_tariff_number"
+                    ],
                     "amount": position["amount"],
                     "customsValue": position["price"],
                     "netWeightInKG": position["weight_unit"]
