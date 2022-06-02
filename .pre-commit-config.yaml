@@ -9,17 +9,20 @@ repos:
       hooks:
         - id: debug-statements
 
-    - repo: black
+    - repo: https://github.com/ambv/black
+      rev: 22.3.0
       hooks:
           - id: black
             language_version: python3.9
             args: [--line-length=79, --check, ./dhl, ./tests]
 
-    - repo: flake8
+    - repo: https://gitlab.com/pycqa/flake8
+      rev: 4.0.1
       hooks:
         - id: flake8
 
-    - repo: bandit
+    - repo: https://github.com/PyCQA/bandit
+      rev: 1.7.4
       hooks:
         - id: bandit
           args: [ -v, -r, ./dhl, ./tests ]
