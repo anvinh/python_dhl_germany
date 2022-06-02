@@ -4,21 +4,22 @@ repos:
       hooks:
         - id: check-hooks-apply
 
-    - repo: pre-commit
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v4.2.0
       hooks:
         - id: debug-statements
 
-    - repo: black
+    - repo: https://github.com/ambv/black
       hooks:
           - id: black
             language_version: python3.9
             args: [--line-length=79, --check, ./dhl, ./tests]
 
-    - repo: flake8
+    - repo: https://gitlab.com/pycqa/flake8
       hooks:
         - id: flake8
 
-    - repo: bandit
+    - repo: https://github.com/PyCQA/bandit
       hooks:
         - id: bandit
           args: [ -v, -r, ./dhl, ./tests ]
