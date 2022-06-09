@@ -31,5 +31,5 @@ phases:
     commands:
       - |
         if [ "${BRANCH}" = "master" ] ; then
-          s3pypi --bucket pypi.fourzero.one
+          s3pypi --bucket pypi.fourzero.one --force
           fi
