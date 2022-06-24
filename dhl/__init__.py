@@ -137,27 +137,42 @@ class DHL:
             ),
         )
 
-        dhl_receiver.Address = self.client.get_type(
-            "ns0:ReceiverNativeAddressType"
-        )(
-            name2=receiver.get("name2"),
-            streetName=receiver["street"],
-            streetNumber=receiver["street_number"],
-            zip=receiver["zip"],
-            city=receiver["city"],
-            Origin=self.client.get_type("ns0:CountryType")(
-                countryISOCode=receiver["country_code"]
-            ),
-            name3=" ".join(
-                [
-                    receiver.get("district", ""),
-                    receiver.get("careOfName", ""),
-                    receiver.get("floorNumber", ""),
-                    receiver.get("roomNumber", ""),
-                    receiver.get("note", ""),
-                ]
-            ).strip()[:50],
-        )
+        if receiver.get("packing_station") and receiver.get("packing_station") != "0":
+            dhl_receiver.Packstation = self.client.get_type("ns0:PackStationType")(
+                packstationNumber=receiver["street_number"],
+                postNumber=receiver["packing_station"],
+                zip=receiver["zip"],
+                city=receiver["city"],
+            )
+        elif receiver.get("account_no") and receiver.get("account_no") != "0":
+            receiver.Postfiliale = self.client.get_type("ns0:PostfilialeTypeNoCountry")(
+                postfilialNumber=receiver["street_number"],
+                postNumber=receiver["account_no"],
+                zip=receiver["zip"],
+                city=receiver["city"],
+            )
+        else:
+            dhl_receiver.Address = self.client.get_type(
+                "ns0:ReceiverNativeAddressType"
+            )(
+                name2=receiver.get("name2"),
+                streetName=receiver["street"],
+                streetNumber=receiver["street_number"],
+                zip=receiver["zip"],
+                city=receiver["city"],
+                Origin=self.client.get_type("ns0:CountryType")(
+                    countryISOCode=receiver["country_code"]
+                ),
+                name3=" ".join(
+                    [
+                        receiver.get("district", ""),
+                        receiver.get("careOfName", ""),
+                        receiver.get("floorNumber", ""),
+                        receiver.get("roomNumber", ""),
+                        receiver.get("note", ""),
+                    ]
+                ).strip()[:50],
+            )
 
         return dhl_receiver
 

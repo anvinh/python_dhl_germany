@@ -75,6 +75,34 @@ class TestDHL:
             is_not(equal_to(None)),
         )
 
+    def test_create_label_DE_packstation(self, dhl_client, shipper, receiver):
+        receiver = {
+            "name": "User Tester",
+            "street": "Packstation",
+            "street_number": "168",
+            "zip": "60320",
+            "city": "Frankfurt",
+            "country_code": "DE",
+            "phone": "",
+            "email": "",
+            "care_of_name": None,
+            "packing_station": "42124193",
+            "account_no": "",
+        }
+
+        response = dhl_client.create_shipment_order(
+            "123456-1",
+            shipper,
+            receiver,
+            0.3,
+            "V01PAK",
+            "22222222220101",
+        )
+        assert_that(
+            response["CreationState"][0]["LabelData"]["labelUrl"],
+            is_not(equal_to(None)),
+        )
+
     def test_create_label_EU(self, dhl_client, shipper):
         receiver = {
             "name": "Test Tester",
