@@ -137,15 +137,22 @@ class DHL:
             ),
         )
 
-        if receiver.get("packing_station") and receiver.get("packing_station") != "0":
-            dhl_receiver.Packstation = self.client.get_type("ns0:PackStationType")(
+        if (
+            receiver.get("packing_station")
+            and receiver.get("packing_station") != "0"
+        ):
+            dhl_receiver.Packstation = self.client.get_type(
+                "ns0:PackStationType"
+            )(
                 packstationNumber=receiver["street_number"],
                 postNumber=receiver["packing_station"],
                 zip=receiver["zip"],
                 city=receiver["city"],
             )
         elif receiver.get("account_no") and receiver.get("account_no") != "0":
-            receiver.Postfiliale = self.client.get_type("ns0:PostfilialeTypeNoCountry")(
+            receiver.Postfiliale = self.client.get_type(
+                "ns0:PostfilialeTypeNoCountry"
+            )(
                 postfilialNumber=receiver["street_number"],
                 postNumber=receiver["account_no"],
                 zip=receiver["zip"],
