@@ -317,3 +317,24 @@ class TestDHL:
                 ]
             ),
         )
+
+    def test_create_label_None_content(self, dhl_client, shipper, receiver):
+        receiver["district"] = None
+        receiver["careOfName"] = None
+        receiver["floorNumber"] = None
+        receiver["roomNumber"] = None
+        receiver["note"] = None
+
+        response = dhl_client.create_shipment_order(
+            "123456-1",
+            shipper,
+            receiver,
+            0.3,
+            "V01PAK",
+            "22222222220101",
+        )
+        # assert_that(response, equal_to("test"))
+        assert_that(
+            response["CreationState"][0]["LabelData"]["labelUrl"],
+            is_not(equal_to(None)),
+        )

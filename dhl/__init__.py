@@ -170,13 +170,19 @@ class DHL:
                 Origin=self.client.get_type("ns0:CountryType")(
                     countryISOCode=receiver["country_code"]
                 ),
+
                 name3=" ".join(
                     [
-                        receiver.get("district", ""),
-                        receiver.get("careOfName", ""),
-                        receiver.get("floorNumber", ""),
-                        receiver.get("roomNumber", ""),
-                        receiver.get("note", ""),
+                        receiver.get("district", "") if receiver.get(
+                            "district", "") else "",
+                        receiver.get("careOfName", "") if receiver.get(
+                            "careOfName", "") else "",
+                        receiver.get("floorNumber", "") if receiver.get(
+                            "floorNumber", "") else "",
+                        receiver.get("roomNumber", "") if receiver.get(
+                            "roomNumber", "") else "",
+                        receiver.get("note", "") if receiver.get(
+                            "note", "") else "",
                     ]
                 ).strip()[:50],
             )
