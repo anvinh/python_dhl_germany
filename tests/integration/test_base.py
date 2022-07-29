@@ -348,7 +348,7 @@ class TestDHL:
             "zip": "35660",
             "city": "Corralejo",
             "country_code": "ES",
-            "careOfName": ""
+            "careOfName": "",
         }
 
         order = {
@@ -391,7 +391,7 @@ class TestDHL:
             0.6,
             "V53WPAK",
             "22222222225301",
-            order_to_ship=order
+            order_to_ship=order,
         )
         # assert_that(response, equal_to("test"))
         assert_that(
