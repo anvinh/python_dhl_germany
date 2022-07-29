@@ -341,10 +341,10 @@ class TestDHL:
 
     def test_create_label_ES(self, dhl_client, shipper):
         receiver = {
-            "name": "Alex Juan Perdomo-Faber",
+            "name": "Some Fancy Name",
             "name2": "",
-            "street": "Calle Bajo Blanco, ",
-            "street_number": "9",
+            "street": "Cool street",
+            "street_number": "123",
             "zip": "35660",
             "city": "Corralejo",
             "country_code": "ES",
