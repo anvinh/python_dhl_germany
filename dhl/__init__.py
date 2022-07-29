@@ -23,7 +23,6 @@ EU_COUNTRY_CODES = [
     "EE",
     "IE",
     "EL",
-    "ES",
     "FR",
     "GR",
     "HR",
