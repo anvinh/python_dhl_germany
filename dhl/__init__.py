@@ -47,7 +47,7 @@ EU_COUNTRY_CODES = [
 
 class DHL:
     __version__ = "0.1.0"
-    __dhl_version__ = "3.3.0"
+    __dhl_version__ = "3.4.0"
 
     def __init__(
         self, auth_user, auth_password, api_user, api_password, is_test=False
@@ -63,10 +63,12 @@ class DHL:
     def _get_wsdl_file(self):
         if self.is_test:
             return os.path.join(
-                os.path.dirname(__file__), "wsdl/3.3.0/test.wsdl"
+                os.path.dirname(__file__),
+                f"wsdl/{self.__dhl_version__}/test.wsdl"
             )
         return os.path.join(
-            os.path.dirname(__file__), "wsdl/3.3.0/production.wsdl"
+            os.path.dirname(__file__),
+            f"wsdl/{self.__dhl_version__}/production.wsdl"
         )
 
     def _get_auth_header(self):
