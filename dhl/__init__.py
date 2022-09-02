@@ -49,7 +49,9 @@ class DHL:
     __version__ = "0.1.0"
     __dhl_version__ = "3.4.0"
 
-    def __init__(self, auth_user, auth_password, api_user, api_password, is_test=False):
+    def __init__(
+        self, auth_user, auth_password, api_user, api_password, is_test=False
+    ):
         self.auth_user = auth_user
         self.auth_password = auth_password
         self.api_user = api_user
@@ -61,10 +63,12 @@ class DHL:
     def _get_wsdl_file(self):
         if self.is_test:
             return os.path.join(
-                os.path.dirname(__file__), f"wsdl/{self.__dhl_version__}/test.wsdl"
+                os.path.dirname(__file__),
+                f"wsdl/{self.__dhl_version__}/test.wsdl",
             )
         return os.path.join(
-            os.path.dirname(__file__), f"wsdl/{self.__dhl_version__}/production.wsdl"
+            os.path.dirname(__file__),
+            f"wsdl/{self.__dhl_version__}/production.wsdl",
         )
 
     def _get_auth_header(self):
@@ -134,15 +138,22 @@ class DHL:
             ),
         )
 
-        if receiver.get("packing_station") and receiver.get("packing_station") != "0":
-            dhl_receiver.Packstation = self.client.get_type("ns0:PackStationType")(
+        if (
+            receiver.get("packing_station")
+            and receiver.get("packing_station") != "0"
+        ):
+            dhl_receiver.Packstation = self.client.get_type(
+                "ns0:PackStationType"
+            )(
                 packstationNumber=receiver["street_number"],
                 postNumber=receiver["packing_station"],
                 zip=receiver["zip"],
                 city=receiver["city"],
             )
         elif receiver.get("account_no") and receiver.get("account_no") != "0":
-            receiver.Postfiliale = self.client.get_type("ns0:PostfilialeTypeNoCountry")(
+            receiver.Postfiliale = self.client.get_type(
+                "ns0:PostfilialeTypeNoCountry"
+            )(
                 postfilialNumber=receiver["street_number"],
                 postNumber=receiver["account_no"],
                 zip=receiver["zip"],
@@ -174,7 +185,9 @@ class DHL:
                         receiver.get("roomNumber", "")
                         if receiver.get("roomNumber", "")
                         else "",
-                        receiver.get("note", "") if receiver.get("note", "") else "",
+                        receiver.get("note", "")
+                        if receiver.get("note", "")
+                        else "",
                     ]
                 ).strip()[:50],
             )
@@ -197,8 +210,12 @@ class DHL:
     def _get_export_document(self, order):
         logger.debug("create export document", order)
         if "customs" not in order:
-            logger.error("ERROR: could not find customs information on order", order)
-            raise Exception("ERROR: could not find customs information on order", order)
+            logger.error(
+                "ERROR: could not find customs information on order", order
+            )
+            raise Exception(
+                "ERROR: could not find customs information on order", order
+            )
 
         export_positions = []
         for position in order["positions"]:
@@ -216,8 +233,12 @@ class DHL:
                     "description": textwrap.shorten(
                         position["name"], width=256, placeholder="..."
                     ),
-                    "countryCodeOrigin": position["customs"]["country_code_origin"],
-                    "customsTariffNumber": position["customs"]["customs_tariff_number"],
+                    "countryCodeOrigin": position["customs"][
+                        "country_code_origin"
+                    ],
+                    "customsTariffNumber": position["customs"][
+                        "customs_tariff_number"
+                    ],
                     "amount": position["amount"],
                     "customsValue": position["price"],
                     "netWeightInKG": position["weight_unit"] / 1000.0,
@@ -274,7 +295,9 @@ class DHL:
                     "create export document for not EU",
                     receiver["country_code"],
                 )
-                shipment["ExportDocument"] = self._get_export_document(order_to_ship)
+                shipment["ExportDocument"] = self._get_export_document(
+                    order_to_ship
+                )
 
             shipment_order = shipment_order_type(
                 sequenceNumber=order_id,
