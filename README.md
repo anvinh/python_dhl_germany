@@ -24,8 +24,8 @@ s3pypi --bucket pypi.fourzero.one
 
 # usage
 dhl_client = DHL(
-    "DHL_AUTH_USER", # test: DHL-Entwickler User / live: App Name
-    "DHL_AUTH_PASSWORD", # test: DHL-Entwickler PW / live: App pw
+    "DHL_AUTH_USER", # test: DHL-Entwickler User / live: DHL App Name
+    "DHL_AUTH_PASSWORD", # test: DHL-Entwickler PW / live: DHL App Token
     "API_USER", # test: 2222222222_01 / live: tenant user
     "API_PASSWORD", # test: pass / live: tenant pw
     is_test=True,
