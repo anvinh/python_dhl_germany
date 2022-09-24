@@ -267,8 +267,7 @@ class DHL:
 
     def get_manifest(self, manifest_date):
         return self.client.service.getManifest(
-            Version=self.version,
-            manifestDate=manifest_date
+            Version=self.version, manifestDate=manifest_date
         )
 
     def create_shipment_order(
