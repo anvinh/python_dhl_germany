@@ -20,3 +20,23 @@ pre-commit hook install: pre-commit install --hook-type pre-push
 ## build and deploy
 python setup.py sdist bdist_wheel
 s3pypi --bucket pypi.fourzero.one
+
+
+# usage
+dhl_client = DHL(
+    "DHL_AUTH_USER", # test: DHL-Entwickler User / live: App Name
+    "DHL_AUTH_PASSWORD", # test: DHL-Entwickler PW / live: App pw
+    "API_USER", # test: 2222222222_01 / live: tenant user
+    "API_PASSWORD", # test: pass / live: tenant pw
+    is_test=True,
+)
+
+dhl_client.create_shipment_order(
+    "ORDER_ID",
+    shipper, # find example in integration test
+    receiver, # find example in integration test
+    6.0, # weight
+    "V53WPAK", # dhl product
+    "22222222225301", # dhl account number
+    order_to_ship=order, # find example in integration test
+)
