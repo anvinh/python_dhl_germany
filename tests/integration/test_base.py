@@ -1,3 +1,4 @@
+from decouple import config
 import pytest
 from dhl import DHL
 from hamcrest import assert_that, equal_to, is_not
@@ -6,8 +7,8 @@ from hamcrest import assert_that, equal_to, is_not
 @pytest.fixture
 def dhl_client():
     return DHL(
-        "AUTH_USER",
-        "AUTH_PASSWORD",
+        config("DHL_AUTH_USER"),
+        config("DHL_AUTH_PASSWORD"),
         "2222222222_01",
         "pass",
         is_test=True,
@@ -19,10 +20,10 @@ def shipper():
     return {
         "name": "Something Something GmbH",
         "name2": "",
-        "street": "Teststr.",
-        "street_number": "1-3",
-        "zip": "22089",
-        "city": "Hamburg",
+        "street": "Teststraße",
+        "street_number": "32",
+        "zip": "22222",
+        "city": "Bremen",
         "country_code": "DE",
         "phone": "040251090",
         "email": "test@test.com",
@@ -314,6 +315,7 @@ class TestDHL:
                     "Bitte geben Sie eine Hausnummer an.",
                     "Die eingegebene Adresse ist nicht leitcodierbar.",
                     "Bitte geben Sie eine Hausnummer an.",
+                    "Der Großkundenempfänger konnte nicht gefunden werden. Bitte überprüfen Sie die Schreibweise im Namen."
                 ]
             ),
         )
