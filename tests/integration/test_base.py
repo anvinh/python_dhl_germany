@@ -6,8 +6,8 @@ from hamcrest import assert_that, equal_to, is_not
 @pytest.fixture
 def dhl_client():
     return DHL(
-        "jep01",
-        "pKy8WplDuA86byh-!SzZf8",
+        "AUTH_USER",
+        "AUTH_PASSWORD",
         "2222222222_01",
         "pass",
         is_test=True,
@@ -17,16 +17,16 @@ def dhl_client():
 @pytest.fixture
 def shipper():
     return {
-        "name": "Albert Bauer Print! GmbH & Co. KG",
+        "name": "Something Something GmbH",
         "name2": "",
-        "street": "Conventstraße",
+        "street": "Teststr.",
         "street_number": "1-3",
         "zip": "22089",
         "city": "Hamburg",
         "country_code": "DE",
         "phone": "040251090",
-        "email": "order@albertbauerprint.com",
-        "contact_person": "Sven Roedemester",
+        "email": "test@test.com",
+        "contact_person": "Test User",
     }
 
 
@@ -35,8 +35,8 @@ def receiver():
     return {
         "name": "Test Tester",
         "name2": "TestCompany",
-        "street": "Kommodore-Johnsen-Boulevard",
-        "street_number": "32",
+        "street": "Teststraße",
+        "street_number": "12",
         "zip": "28217",
         "city": "Bremen",
         "country_code": "DE",
@@ -207,11 +207,11 @@ class TestDHL:
 
         order = {
             "order_id": "126bad42dc1",
-            "source": "foreverontheblockchain_api",
+            "source": "somethingsomething_api",
             "positions": [
                 {
                     "product_id": "document",
-                    "name": "Druckerzeugnisse",
+                    "name": "somethingsomething",
                     "barcode": "dfc4754e",
                     "amount": 2,
                     "weight_unit": 100,
@@ -233,7 +233,7 @@ class TestDHL:
             "status": {"paid": True, "printed": True, "shipped": False},
             "customs": {
                 "invoice_no": "126bad42dc1",
-                "description": "Druckerzeugnisse",
+                "description": "somethingsomething",
                 "place_of_commital": "Hamburg",
             },
         }
@@ -353,11 +353,11 @@ class TestDHL:
 
         order = {
             "order_id": "126bad42dc1",
-            "source": "foreverontheblockchain_api",
+            "source": "somethingsomething_api",
             "positions": [
                 {
                     "product_id": "document",
-                    "name": "Druckerzeugnisse",
+                    "name": "somethingsomething",
                     "barcode": "dfc4754e",
                     "amount": 2,
                     "weight_unit": 100,
@@ -379,7 +379,7 @@ class TestDHL:
             "status": {"paid": True, "printed": True, "shipped": False},
             "customs": {
                 "invoice_no": "126bad42dc1",
-                "description": "Druckerzeugnisse",
+                "description": "somethingsomething",
                 "place_of_commital": "Hamburg",
             },
         }
