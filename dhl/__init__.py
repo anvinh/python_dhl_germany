@@ -265,6 +265,12 @@ class DHL:
         response = requests.get(url)
         return base64.b64encode(response.content)
 
+    def get_manifest(self, manifest_date):
+        return self.client.service.getManifest(
+            Version=self.version,
+            manifestDate=manifest_date
+        )
+
     def create_shipment_order(
         self,
         order_id: str,

@@ -400,3 +400,14 @@ class TestDHL:
             response["CreationState"][0]["LabelData"]["labelUrl"],
             is_not(equal_to(None)),
         )
+
+    """
+    # TODO: implement later
+    def test_get_manifest(self, dhl_client):
+        response = dhl_client.get_manifest("2022-09-24")
+        # assert_that(response, equal_to("test"))
+        assert_that(
+            response,
+            equal_to("test"),
+        )
+    """
