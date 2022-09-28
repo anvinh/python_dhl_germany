@@ -401,13 +401,13 @@ class TestDHL:
             is_not(equal_to(None)),
         )
 
-    """
-    # TODO: implement later
     def test_get_manifest(self, dhl_client):
         response = dhl_client.get_manifest("2022-09-24")
-        # assert_that(response, equal_to("test"))
+
+        with open("tests/integration/pdfs/manifest_20220924.pdf", "wb") as f:
+            f.write(response.manifestData)
+
         assert_that(
-            response,
-            equal_to("test"),
+            response.Status.statusText,
+            equal_to("ok"),
         )
-    """

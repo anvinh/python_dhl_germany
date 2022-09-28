@@ -113,3 +113,4 @@ venv.bak/
 settings.json
 
 /test.py
+/tests/integration/pdfs/
