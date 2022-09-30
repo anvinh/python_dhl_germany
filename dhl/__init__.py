@@ -151,7 +151,7 @@ class DHL:
                 city=receiver["city"],
             )
         elif receiver.get("account_no") and receiver.get("account_no") != "0":
-            receiver.Postfiliale = self.client.get_type(
+            dhl_receiver.Postfiliale = self.client.get_type(
                 "ns0:PostfilialeTypeNoCountry"
             )(
                 postfilialNumber=receiver["street_number"],
