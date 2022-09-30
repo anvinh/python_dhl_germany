@@ -401,6 +401,8 @@ class TestDHL:
             is_not(equal_to(None)),
         )
 
+    """
+    # DEACTIVATED because of performance reasons
     def test_get_manifest(self, dhl_client):
         response = dhl_client.get_manifest("2022-09-24")
 
@@ -411,3 +413,4 @@ class TestDHL:
             response.Status.statusText,
             equal_to("ok"),
         )
+    """
