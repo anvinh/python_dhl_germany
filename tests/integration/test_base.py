@@ -2,6 +2,7 @@ from decouple import config
 import pytest
 from dhl import DHL
 from hamcrest import assert_that, equal_to, is_not
+import datetime
 
 
 @pytest.fixture
@@ -54,6 +55,22 @@ class TestDHL:
             0.3,
             "V01PAK",
             "22222222220101",
+        )
+        # assert_that(response, equal_to("test"))
+        assert_that(
+            response["CreationState"][0]["LabelData"]["labelUrl"],
+            is_not(equal_to(None)),
+        )
+
+    def test_create_label_DE_ShipmentDate(self, dhl_client, shipper, receiver):
+        response = dhl_client.create_shipment_order(
+            "123456-1",
+            shipper,
+            receiver,
+            0.3,
+            "V01PAK",
+            "22222222220101",
+            shipment_date=datetime.datetime.now() + datetime.timedelta(days=2)
         )
         # assert_that(response, equal_to("test"))
         assert_that(
@@ -189,6 +206,131 @@ class TestDHL:
         assert_that(
             response["CreationState"][0]["LabelData"]["exportLabelUrl"],
             is_not(equal_to(None)),
+        )
+
+    def test_create_label_CH_Warensendung(self, dhl_client, shipper, receiver):
+        receiver = {
+            "name": "Test Tester",
+            "name2": "",
+            "street": "Kohlenberg",
+            "street_number": "17",
+            "zip": "4051",
+            "city": "Basel",
+            "country_code": "CH",
+            "careOfName": "",
+        }
+
+        order = {
+            "customs": {
+                "invoice_no": "1234567",
+                "description": "Ziegelsteine",
+                "place_of_commital": shipper["city"],
+            },
+            "positions": [
+                {
+                    "name": "Test Product 1",
+                    "amount": 2,
+                    "price": 12.5,
+                    "weight_unit": 150,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                },
+                {
+                    "name": "Test Product 2",
+                    "amount": 3,
+                    "price": 1.5,
+                    "weight_unit": 100,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                },
+            ],
+        }
+
+        response = dhl_client.create_shipment_order(
+            "123456-4",
+            shipper,
+            receiver,
+            0.9,
+            "V66WPI",
+            "22222222226601",
+            order_to_ship=order,
+            label_format="100x70mm"
+        )
+        # assert_that(response, equal_to("test"))
+        assert_that(
+            response["CreationState"][0]["LabelData"]["labelUrl"],
+            is_not(equal_to(None)),
+        )
+        assert_that(
+            response["CreationState"][0]["LabelData"]["exportLabelUrl"],
+            equal_to(None),
+        )
+
+    def test_create_label_CH_Warensendung_Premium(self, dhl_client, shipper, receiver):
+        receiver = {
+            "name": "Test Tester",
+            "name2": "",
+            "street": "Kohlenberg",
+            "street_number": "17",
+            "zip": "4051",
+            "city": "Basel",
+            "country_code": "CH",
+            "careOfName": "",
+        }
+
+        order = {
+            "customs": {
+                "invoice_no": "1234567",
+                "description": "Ziegelsteine",
+                "place_of_commital": shipper["city"],
+            },
+            "positions": [
+                {
+                    "name": "Test Product 1",
+                    "amount": 2,
+                    "price": 12.5,
+                    "weight_unit": 150,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                },
+                {
+                    "name": "Test Product 2",
+                    "amount": 3,
+                    "price": 1.5,
+                    "weight_unit": 100,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                },
+            ],
+        }
+
+        response = dhl_client.create_shipment_order(
+            "123456-4",
+            shipper,
+            receiver,
+            0.9,
+            "V66WPI",
+            "22222222226601",
+            order_to_ship=order,
+            label_format="100x70mm",
+            is_premium=True,
+        )
+        # assert_that(response, equal_to("test"))
+        assert_that(
+            response["CreationState"][0]["LabelData"]["labelUrl"],
+            is_not(equal_to(None)),
+        )
+        assert_that(
+            response["CreationState"][0]["LabelData"]["exportLabelUrl"],
+            equal_to(None),
         )
 
     def test_create_label_CH_ORG(self, dhl_client, shipper, receiver):
