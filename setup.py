@@ -17,7 +17,7 @@ if path.isfile('requirements.txt'):
 
 setup(
     name='python_dhl_germany',
-    version='0.3.4.2',
+    version='0.3.4.3',
     description='',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -26,7 +26,12 @@ setup(
     author_email='info@jep-dev.com',
     license='MIT',
     url='',
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    packages=find_packages(exclude=['contrib', 'docs', 'tests', "tests*"]),
+    data_files=[('', [
+        'dhl/wsdl/3.4.0/geschaeftskundenversand-api-3.4.0-schema-bcs_base.xsd',
+        'dhl/wsdl/3.4.0/geschaeftskundenversand-api-3.4.0-schema-cis_base.xsd',
+        'dhl/wsdl/3.4.0/production.wsdl',
+    ])],
     include_package_data=True,
     install_requires=requirements,
     python_requires='>=3.9'

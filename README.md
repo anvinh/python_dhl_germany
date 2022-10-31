@@ -10,6 +10,7 @@ https://entwickler.dhl.de/group/ep/wsapis/geschaeftskundenversand/current
 - open test.wsdl and patch
 FROM: <soap:address location="https://cig.dhl.de/services/production/soap"/>
 TO: <soap:address location="https://cig.dhl.de/services/sandbox/soap"/>
+- set new version in setup.py -> data_files (array)
 
 ## install dev
 virtualenv venv
