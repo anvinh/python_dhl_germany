@@ -211,7 +211,6 @@ class DHL:
         )
 
         if is_premium:
-            print(self.client.wsdl.types)
             shipment_details.Service = self.client.get_type("ns1:ShipmentService")(
                 Premium=1
             ),
