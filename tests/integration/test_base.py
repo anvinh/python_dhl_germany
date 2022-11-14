@@ -1,7 +1,7 @@
 from decouple import config
 import pytest
 from dhl import DHL
-from hamcrest import assert_that, equal_to, is_not
+from hamcrest import assert_that, equal_to, is_not, starts_with
 import datetime
 
 
@@ -324,6 +324,11 @@ class TestDHL:
             is_premium=True,
         )
         #assert_that(response, equal_to("test"))
+
+        assert_that(
+            response["CreationState"][0]["shipmentNumber"],
+            starts_with("L"),
+        )
 
         assert_that(
             response["CreationState"][0]["LabelData"]["labelUrl"],

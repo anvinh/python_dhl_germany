@@ -207,13 +207,13 @@ class DHL:
             customerReference=order_id,
             ShipmentItem=self.client.get_type("ns1:ShipmentItemTypeType")(
                 weightInKG=weight_total
-            ),
+            )
         )
 
         if is_premium:
             shipment_details.Service = self.client.get_type("ns1:ShipmentService")(
                 Premium=1
-            ),
+            )
 
         return shipment_details
 
