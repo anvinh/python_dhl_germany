@@ -1,7 +1,7 @@
 from decouple import config
 import pytest
 from dhl import DHL
-from hamcrest import assert_that, equal_to, is_not
+from hamcrest import assert_that, equal_to, is_not, starts_with
 import datetime
 
 
@@ -403,7 +403,13 @@ class TestDHL:
             label_format="100x70mm",
             is_premium=True,
         )
-        # assert_that(response, equal_to("test"))
+        #assert_that(response, equal_to("test"))
+
+        assert_that(
+            response["CreationState"][0]["shipmentNumber"],
+            starts_with("L"),
+        )
+
         assert_that(
             response["CreationState"][0]["LabelData"]["labelUrl"],
             is_not(equal_to(None)),
@@ -623,16 +629,75 @@ class TestDHL:
             is_not(equal_to(None)),
         )
 
-    """
     # DEACTIVATED because of performance reasons
-    def test_get_manifest(self, dhl_client):
-        response = dhl_client.get_manifest("2022-09-24")
+    def test_get_manifest(self, dhl_client, shipper, receiver):
+        receiver = {
+            "name": "Test Tester",
+            "name2": "",
+            "street": "Kohlenberg",
+            "street_number": "17",
+            "zip": "4051",
+            "city": "Basel",
+            "country_code": "CH",
+            "careOfName": "",
+        }
 
-        with open("tests/integration/pdfs/manifest_20220924.pdf", "wb") as f:
-            f.write(response.manifestData)
+        order = {
+            "customs": {
+                "invoice_no": "1234567",
+                "description": "Ziegelsteine",
+                "place_of_commital": shipper["city"],
+            },
+            "positions": [
+                {
+                    "name": "Test Product 1",
+                    "amount": 2,
+                    "price": 12.5,
+                    "weight_unit": 150,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                },
+                {
+                    "name": "Test Product 2",
+                    "amount": 3,
+                    "price": 1.5,
+                    "weight_unit": 100,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                },
+            ],
+        }
+
+        shipment = dhl_client.create_shipment_order(
+            "123456-4",
+            shipper,
+            receiver,
+            0.9,
+            "V66WPI",
+            "22222222226601",
+            order_to_ship=order,
+            label_format="100x70mm",
+            is_premium=True,
+        )
+
+        manifest_process = dhl_client.do_manifest(
+            shipment["CreationState"][0]["shipmentNumber"])
 
         assert_that(
-            response.Status.statusText,
+            manifest_process.Status.statusText,
             equal_to("ok"),
         )
-    """
+
+        manifest = dhl_client.get_manifest("2022-11-13")
+
+        with open("tests/integration/pdfs/manifest_20220924.pdf", "wb") as f:
+            f.write(manifest.manifestData)
+
+        assert_that(
+            manifest.Status.statusText,
+            equal_to("ok"),
+        )

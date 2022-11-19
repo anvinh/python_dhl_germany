@@ -218,13 +218,13 @@ class DHL:
             shipmentDate=shipment_date.strftime("%Y-%m-%d"),
             customerReference=order_id,
             ShipmentItem=self.client.get_type("ns1:ShipmentItemTypeType")(
-                weightInKG=self._get_weight_in_kg(weight_total, weight_unit),
-            ),
+                weightInKG=self._get_weight_in_kg(weight_total, weight_unit)
+            )
         )
 
         if is_premium:
-            shipment_details.Service = (
-                self.client.get_type("ns1:ShipmentService")(Premium=1),
+            shipment_details.Service = self.client.get_type("ns1:ShipmentService")(
+                Premium=1
             )
 
         return shipment_details
@@ -288,6 +288,15 @@ class DHL:
     def get_label_from_url(self, url):
         response = requests.get(url)
         return base64.b64encode(response.content)
+
+    def do_manifest(self, shipmentNumber=None):
+        if shipmentNumber:
+            return self.client.service.doManifest(
+                Version=self.version, shipmentNumber=shipmentNumber
+            )
+        return self.client.service.doManifest(
+            Version=self.version
+        )
 
     def get_manifest(self, manifest_date):
         return self.client.service.getManifest(
@@ -372,5 +381,6 @@ class DHL:
                 labelFormat=label_format,
             )
         except Exception as ex:
+            print("ERROR:", ex)
             logger.error("could not create shipment", ex)
             raise Exception("could not create shipment", ex)
