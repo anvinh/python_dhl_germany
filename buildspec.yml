@@ -21,6 +21,7 @@ phases:
         if [ "${BRANCH}" = "master" ] ; then
           pip install s3pypi==0.11.1
         fi
+        pip install wheel
   build:
     commands:
       - |
@@ -32,4 +33,4 @@ phases:
       - |
         if [ "${BRANCH}" = "master" ] ; then
           s3pypi --bucket pypi.fourzero.one --force
-          fi
+        fi

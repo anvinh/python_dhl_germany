@@ -195,17 +195,27 @@ class DHL:
         return dhl_receiver
 
     def _get_shipment_details(
-        self, dhl_product, dhl_account_number, order_id, weight_total
+        self, dhl_product, dhl_account_number, order_id, weight_total, shipment_date=None, is_premium=False
     ):
-        return self.client.get_type("ns1:ShipmentDetailsTypeType")(
+        if not shipment_date:
+            shipment_date = datetime.now()
+
+        shipment_details = self.client.get_type("ns1:ShipmentDetailsTypeType")(
             product=dhl_product,
             accountNumber=dhl_account_number,
-            shipmentDate=datetime.now().strftime("%Y-%m-%d"),
+            shipmentDate=shipment_date.strftime("%Y-%m-%d"),
             customerReference=order_id,
             ShipmentItem=self.client.get_type("ns1:ShipmentItemTypeType")(
                 weightInKG=weight_total
-            ),
+            )
         )
+
+        if is_premium:
+            shipment_details.Service = self.client.get_type("ns1:ShipmentService")(
+                Premium=1
+            )
+
+        return shipment_details
 
     def _get_export_document(self, order):
         logger.debug("create export document", order)
@@ -265,6 +275,15 @@ class DHL:
         response = requests.get(url)
         return base64.b64encode(response.content)
 
+    def do_manifest(self, shipmentNumber=None):
+        if shipmentNumber:
+            return self.client.service.doManifest(
+                Version=self.version, shipmentNumber=shipmentNumber
+            )
+        return self.client.service.doManifest(
+            Version=self.version
+        )
+
     def get_manifest(self, manifest_date):
         return self.client.service.getManifest(
             Version=self.version, manifestDate=manifest_date
@@ -282,13 +301,14 @@ class DHL:
         label_format="910-300-600",
         force_print=False,
         order_to_ship=None,
+        shipment_date=None,
+        is_premium=False,
     ):
         try:
             shipment_order_type = self.client.get_type("ns1:ShipmentOrderType")
-
             shipment = {
                 "ShipmentDetails": self._get_shipment_details(
-                    dhl_product, dhl_account_number, order_id, weight_total
+                    dhl_product, dhl_account_number, order_id, weight_total, shipment_date, is_premium
                 ),
                 "Shipper": self._get_shipper(shipper),
                 "Receiver": self._get_receiver(receiver, shipper["phone"]),
@@ -317,5 +337,6 @@ class DHL:
                 labelFormat=label_format,
             )
         except Exception as ex:
+            print("ERROR:", ex)
             logger.error("could not create shipment", ex)
             raise Exception("could not create shipment", ex)
