@@ -251,7 +251,7 @@ class DHL:
                     ],
                     "amount": position["amount"],
                     "customsValue": position["price"],
-                    "netWeightInKG": position["weight_unit"] / 1000.0,
+                    "netWeightInKG": position["weight_in_g_net"] / 1000.0,
                 }
             )
 
