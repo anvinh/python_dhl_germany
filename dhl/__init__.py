@@ -219,13 +219,13 @@ class DHL:
             customerReference=order_id,
             ShipmentItem=self.client.get_type("ns1:ShipmentItemTypeType")(
                 weightInKG=self._get_weight_in_kg(weight_total, weight_unit)
-            )
+            ),
         )
 
         if is_premium:
-            shipment_details.Service = self.client.get_type("ns1:ShipmentService")(
-                Premium=1
-            )
+            shipment_details.Service = self.client.get_type(
+                "ns1:ShipmentService"
+            )(Premium=1)
 
         return shipment_details
 
@@ -294,9 +294,7 @@ class DHL:
             return self.client.service.doManifest(
                 Version=self.version, shipmentNumber=shipmentNumber
             )
-        return self.client.service.doManifest(
-            Version=self.version
-        )
+        return self.client.service.doManifest(Version=self.version)
 
     def get_manifest(self, manifest_date):
         return self.client.service.getManifest(
