@@ -34,7 +34,7 @@ ShipmentOrderPosition = {
     "customs": {
         # c	ISO-Code (ISO 3166-2) of country the goods were manufactured
         "country_code_origin": "",
-        # Customs tariff number of the unit / position. If the service PDDP is used, customsTariffNumber is required.
+        # Customs tariff number of the unit / position
         "customs_tariff_number": "",
     },
 }

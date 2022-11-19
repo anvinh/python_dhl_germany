@@ -331,7 +331,8 @@ class DHL:
 
             Returns:
                 CreateShipmentOrderResponse (dict): DHL response CreateShipmentOrderResponse
-        """
+        """  # noqa
+
         try:
             shipment_order_type = self.client.get_type("ns1:ShipmentOrderType")
             shipment = {

@@ -6,4 +6,5 @@ pytest-cov
 autopep8
 pyhamcrest
 black
+flake8
 python-decouple
