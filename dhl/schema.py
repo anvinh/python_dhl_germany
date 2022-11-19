@@ -21,7 +21,7 @@ ShipmentOrder = {
         "description": "",  # description for shipment
         "place_of_commital": "",  # Locaton the shipment is handed over to DHL
     },
-    "positions": []  # list of ShipmentOrderPosition
+    "positions": [],  # list of ShipmentOrderPosition
 }
 
 ShipmentOrderPosition = {

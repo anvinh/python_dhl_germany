@@ -200,7 +200,14 @@ class DHL:
         return dhl_receiver
 
     def _get_shipment_details(
-        self, dhl_product, dhl_account_number, order_id, weight_total, weight_unit, shipment_date=None, is_premium=False
+        self,
+        dhl_product,
+        dhl_account_number,
+        order_id,
+        weight_total,
+        weight_unit,
+        shipment_date=None,
+        is_premium=False,
     ):
         if not shipment_date:
             shipment_date = datetime.now()
@@ -216,9 +223,9 @@ class DHL:
         )
 
         if is_premium:
-            shipment_details.Service = self.client.get_type("ns1:ShipmentService")(
-                Premium=1
-            ),
+            shipment_details.Service = (
+                self.client.get_type("ns1:ShipmentService")(Premium=1),
+            )
 
         return shipment_details
 
@@ -256,7 +263,9 @@ class DHL:
                     ],
                     "amount": position["amount"],
                     "customsValue": position["price"],
-                    "netWeightInKG": self._get_weight_in_kg(position["weight"], position.get("weight_unit")),
+                    "netWeightInKG": self._get_weight_in_kg(
+                        position["weight"], position.get("weight_unit")
+                    ),
                 }
             )
 
@@ -327,7 +336,13 @@ class DHL:
             shipment_order_type = self.client.get_type("ns1:ShipmentOrderType")
             shipment = {
                 "ShipmentDetails": self._get_shipment_details(
-                    dhl_product, dhl_account_number, order_id, weight_total, weight_unit, shipment_date, is_premium
+                    dhl_product,
+                    dhl_account_number,
+                    order_id,
+                    weight_total,
+                    weight_unit,
+                    shipment_date,
+                    is_premium,
                 ),
                 "Shipper": self._get_shipper(shipper),
                 "Receiver": self._get_receiver(receiver, shipper["phone"]),
