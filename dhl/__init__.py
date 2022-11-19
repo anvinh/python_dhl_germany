@@ -102,6 +102,11 @@ class DHL:
         client.set_default_soapheaders([self._get_auth_header()])
         return client
 
+    def _get_weight_in_kg(self, value, unit):
+        if unit == "kg" or unit is None:
+            return value
+        return value / 1000.0
+
     def _get_shipper(self, shipper):
         shipper_name = self.client.get_type("ns0:NameType")(
             name1=shipper["name"], name2=shipper.get("name2")
@@ -195,7 +200,7 @@ class DHL:
         return dhl_receiver
 
     def _get_shipment_details(
-        self, dhl_product, dhl_account_number, order_id, weight_total, shipment_date=None, is_premium=False
+        self, dhl_product, dhl_account_number, order_id, weight_total, weight_unit, shipment_date=None, is_premium=False
     ):
         if not shipment_date:
             shipment_date = datetime.now()
@@ -206,7 +211,7 @@ class DHL:
             shipmentDate=shipment_date.strftime("%Y-%m-%d"),
             customerReference=order_id,
             ShipmentItem=self.client.get_type("ns1:ShipmentItemTypeType")(
-                weightInKG=weight_total
+                weightInKG=self._get_weight_in_kg(weight_total, weight_unit),
             ),
         )
 
@@ -251,7 +256,7 @@ class DHL:
                     ],
                     "amount": position["amount"],
                     "customsValue": position["price"],
-                    "netWeightInKG": position["weight_unit"] / 1000.0,
+                    "netWeightInKG": self._get_weight_in_kg(position["weight"], position.get("weight_unit")),
                 }
             )
 
@@ -294,12 +299,35 @@ class DHL:
         order_to_ship=None,
         shipment_date=None,
         is_premium=False,
+        weight_unit="kg",
     ):
+        """
+        create_shipment_order register a DHL shipment.
+        For detailed information check the DHL documenation.
+
+            Parameters:
+                order_id (str): Free field to to tag multiple shipment orders individually by client
+                shipper (dict): Shipper address. Use schemas.Address to get the needed fields
+                receiver (dict): Receiver address. Use schemas.Address to get the needed fields
+                weight_total (float): Total weight of the shipment (incl. packaging)
+                dhl_product (str): Determines the DHL Paket product to be ordered. Check DHL documentation for the right product
+                dhl_account_number (str): DHL account number (14 digits)
+                label_type (str): Dial to determine label ouput format. Must be either 'URL' or 'B64'
+                label_format (str): In this optional section you can define the label formats. Check DHL documentation for the right formats
+                force_print (bool): If set to true (=1), the label will be only be printable, if the receiver address is valid.
+                order_to_ship (dict): Order detail information. Use schemas.ShipmentOrder to get the needed fields
+                shipment_date (datetime): Date of shipment should be close to current date (default) and must not be in the past. Will be convert to string shipment_date.strftime("%Y-%m-%d")
+                is_premium (bool): Premium for fast and safe delivery of international shipments. If not set Service Premium will not send to DHL
+                weight_unit (str): Used unit for weight_total. Defauklt "kg". Possible values ["g", "kg"]
+
+            Returns:
+                CreateShipmentOrderResponse (dict): DHL response CreateShipmentOrderResponse
+        """
         try:
             shipment_order_type = self.client.get_type("ns1:ShipmentOrderType")
             shipment = {
                 "ShipmentDetails": self._get_shipment_details(
-                    dhl_product, dhl_account_number, order_id, weight_total, shipment_date, is_premium
+                    dhl_product, dhl_account_number, order_id, weight_total, weight_unit, shipment_date, is_premium
                 ),
                 "Shipper": self._get_shipper(shipper),
                 "Receiver": self._get_receiver(receiver, shipper["phone"]),

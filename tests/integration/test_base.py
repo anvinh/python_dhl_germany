@@ -93,6 +93,22 @@ class TestDHL:
             is_not(equal_to(None)),
         )
 
+    def test_create_label_DE_Warensendung_gram(self, dhl_client, shipper, receiver):
+        response = dhl_client.create_shipment_order(
+            "123456-2",
+            shipper,
+            receiver,
+            500,
+            "V62WP",
+            "22222222226201",
+            weight_unit="g"
+        )
+        # assert_that(response, equal_to("test"))
+        assert_that(
+            response["CreationState"][0]["LabelData"]["labelUrl"],
+            is_not(equal_to(None)),
+        )
+
     def test_create_label_DE_packstation(self, dhl_client, shipper, receiver):
         receiver = {
             "name": "User Tester",
@@ -170,7 +186,7 @@ class TestDHL:
                     "name": "Test Product 1",
                     "amount": 2,
                     "price": 12.5,
-                    "weight_unit": 150,
+                    "weight": 0.15,
                     "customs": {
                         "country_code_origin": "DE",
                         "customs_tariff_number": "49119900",
@@ -180,7 +196,7 @@ class TestDHL:
                     "name": "Test Product 2",
                     "amount": 3,
                     "price": 1.5,
-                    "weight_unit": 100,
+                    "weight": 0.1,
                     "customs": {
                         "country_code_origin": "DE",
                         "customs_tariff_number": "49119900",
@@ -231,7 +247,7 @@ class TestDHL:
                     "name": "Test Product 1",
                     "amount": 2,
                     "price": 12.5,
-                    "weight_unit": 150,
+                    "weight": 0.15,
                     "customs": {
                         "country_code_origin": "DE",
                         "customs_tariff_number": "49119900",
@@ -241,7 +257,71 @@ class TestDHL:
                     "name": "Test Product 2",
                     "amount": 3,
                     "price": 1.5,
-                    "weight_unit": 100,
+                    "weight": 0.1,
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                },
+            ],
+        }
+
+        response = dhl_client.create_shipment_order(
+            "123456-4",
+            shipper,
+            receiver,
+            0.9,
+            "V66WPI",
+            "22222222226601",
+            order_to_ship=order,
+            label_format="100x70mm"
+        )
+        # assert_that(response, equal_to("test"))
+        assert_that(
+            response["CreationState"][0]["LabelData"]["labelUrl"],
+            is_not(equal_to(None)),
+        )
+        assert_that(
+            response["CreationState"][0]["LabelData"]["exportLabelUrl"],
+            equal_to(None),
+        )
+
+    def test_create_label_CH_Warensendung_gram(self, dhl_client, shipper, receiver):
+        receiver = {
+            "name": "Test Tester",
+            "name2": "",
+            "street": "Kohlenberg",
+            "street_number": "17",
+            "zip": "4051",
+            "city": "Basel",
+            "country_code": "CH",
+            "careOfName": "",
+        }
+
+        order = {
+            "customs": {
+                "invoice_no": "1234567",
+                "description": "Ziegelsteine",
+                "place_of_commital": shipper["city"],
+            },
+            "positions": [
+                {
+                    "name": "Test Product 1",
+                    "amount": 2,
+                    "price": 12.5,
+                    "weight": 150,
+                    "weight_unit": "g",
+                    "customs": {
+                        "country_code_origin": "DE",
+                        "customs_tariff_number": "49119900",
+                    },
+                },
+                {
+                    "name": "Test Product 2",
+                    "amount": 3,
+                    "price": 1.5,
+                    "weight": 100,
+                    "weight_unit": "g",
                     "customs": {
                         "country_code_origin": "DE",
                         "customs_tariff_number": "49119900",
@@ -293,7 +373,7 @@ class TestDHL:
                     "name": "Test Product 1",
                     "amount": 2,
                     "price": 12.5,
-                    "weight_unit": 150,
+                    "weight": 0.15,
                     "customs": {
                         "country_code_origin": "DE",
                         "customs_tariff_number": "49119900",
@@ -303,7 +383,7 @@ class TestDHL:
                     "name": "Test Product 2",
                     "amount": 3,
                     "price": 1.5,
-                    "weight_unit": 100,
+                    "weight": 0.1,
                     "customs": {
                         "country_code_origin": "DE",
                         "customs_tariff_number": "49119900",
@@ -357,7 +437,7 @@ class TestDHL:
                     "name": "somethingsomething",
                     "barcode": "dfc4754e",
                     "amount": 2,
-                    "weight_unit": 100,
+                    "weight": 0.1,
                     "required_shipment": True,
                     "scanned": 2,
                     "price": 2.0,
@@ -504,7 +584,7 @@ class TestDHL:
                     "name": "somethingsomething",
                     "barcode": "dfc4754e",
                     "amount": 2,
-                    "weight_unit": 100,
+                    "weight": 0.1,
                     "required_shipment": True,
                     "scanned": 2,
                     "price": 2.0,

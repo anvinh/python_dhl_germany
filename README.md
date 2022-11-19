@@ -75,7 +75,7 @@ order = {
             "name": "Test Product 1",
             "amount": 2,
             "price": 12.5,
-            "weight_unit": 150,
+            "weight": 0.15,
             "customs": {
                 "country_code_origin": "DE",
                 "customs_tariff_number": "49119900",
@@ -85,7 +85,7 @@ order = {
             "name": "Test Product 2",
             "amount": 3,
             "price": 1.5,
-            "weight_unit": 100,
+            "weight": 100,
             "customs": {
                 "country_code_origin": "DE",
                 "customs_tariff_number": "49119900",
