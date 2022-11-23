@@ -102,7 +102,9 @@ class DHL:
         client.set_default_soapheaders([self._get_auth_header()])
         return client
 
-    def _get_weight_in_kg(self, value, unit):
+    def _get_weight_in_kg(self, value, unit="kg"):
+        if not unit in ["kg", "g", None]:
+            raise ValueError("unit accepts only 'kg' or 'g'")
         if unit == "kg" or unit is None:
             return value
         return value / 1000.0
