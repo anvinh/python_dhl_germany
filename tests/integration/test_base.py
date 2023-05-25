@@ -70,7 +70,7 @@ class TestDHL:
             0.3,
             "V01PAK",
             "22222222220101",
-            shipment_date=datetime.datetime.now() + datetime.timedelta(days=2)
+            shipment_date=datetime.datetime.now() + datetime.timedelta(days=2),
         )
         # assert_that(response, equal_to("test"))
         assert_that(
@@ -93,7 +93,9 @@ class TestDHL:
             is_not(equal_to(None)),
         )
 
-    def test_create_label_DE_Warensendung_gram(self, dhl_client, shipper, receiver):
+    def test_create_label_DE_Warensendung_gram(
+        self, dhl_client, shipper, receiver
+    ):
         response = dhl_client.create_shipment_order(
             "123456-2",
             shipper,
@@ -101,7 +103,7 @@ class TestDHL:
             500,
             "V62WP",
             "22222222226201",
-            weight_unit="g"
+            weight_unit="g",
         )
         # assert_that(response, equal_to("test"))
         assert_that(
@@ -274,7 +276,7 @@ class TestDHL:
             "V66WPI",
             "22222222226601",
             order_to_ship=order,
-            label_format="100x70mm"
+            label_format="100x70mm",
         )
         # assert_that(response, equal_to("test"))
         assert_that(
@@ -286,7 +288,9 @@ class TestDHL:
             equal_to(None),
         )
 
-    def test_create_label_CH_Warensendung_gram(self, dhl_client, shipper, receiver):
+    def test_create_label_CH_Warensendung_gram(
+        self, dhl_client, shipper, receiver
+    ):
         receiver = {
             "name": "Test Tester",
             "name2": "",
@@ -338,7 +342,7 @@ class TestDHL:
             "V66WPI",
             "22222222226601",
             order_to_ship=order,
-            label_format="100x70mm"
+            label_format="100x70mm",
         )
         # assert_that(response, equal_to("test"))
         assert_that(
@@ -350,7 +354,9 @@ class TestDHL:
             equal_to(None),
         )
 
-    def test_create_label_CH_Warensendung_Premium(self, dhl_client, shipper, receiver):
+    def test_create_label_CH_Warensendung_Premium(
+        self, dhl_client, shipper, receiver
+    ):
         receiver = {
             "name": "Test Tester",
             "name2": "",
@@ -403,7 +409,7 @@ class TestDHL:
             label_format="100x70mm",
             is_premium=True,
         )
-        #assert_that(response, equal_to("test"))
+        # assert_that(response, equal_to("test"))
 
         assert_that(
             response["CreationState"][0]["shipmentNumber"],
@@ -543,7 +549,7 @@ class TestDHL:
                     "Bitte geben Sie eine Hausnummer an.",
                     "Die eingegebene Adresse ist nicht leitcodierbar.",
                     "Bitte geben Sie eine Hausnummer an.",
-                    "Der Großkundenempfänger konnte nicht gefunden werden. Bitte überprüfen Sie die Schreibweise im Namen."
+                    "Der Ort ist zu dieser PLZ nicht bekannt. Die Sendung ist nicht leitcodierbar.",
                 ]
             ),
         )
